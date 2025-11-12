@@ -3,5 +3,37 @@
 {% block title %}Home{% endblock %}
 
 {% block content %}
-<h1>This is the homepage!</h1>
+<h1 align="center">Notes</h1>
+<ul class="list-group list-group-flush" id="notes">
+    {% for note in user.notes %}
+    <li class="list-group-item">{{ note.data }}
+        <button type="button" 
+                class="btn-close" 
+                aria-label="Close"
+                onClick="deleteNote({{ note.id | tojson }})"></button>
+    </li>
+    {% endfor %}
+</ul>
+
+<form method="POST">
+    <textarea name="note" id="note" class="form-control"></textarea>
+    <br/>
+    <div align="center">
+        <button type="submit" class="btn btn-primary">Add Note</button>
+    </div>
+</form>
+
+<script>
+function deleteNote(noteId) {
+    fetch("/delete-note", {
+        method: "POST",
+        body: JSON.stringify({ noteId: noteId }),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then((_res) => {
+        window.location.href = "/";
+    });
+}
+</script>
 {% endblock %}
