@@ -9,4 +9,5 @@ dependencies = [
     "flask-login>=0.6.3",
     "flask-pymongo>=3.0.1",
     "jsonify>=0.5",
+    "python-dotenv>=1.2.1",
 ]

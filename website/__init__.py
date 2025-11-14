@@ -6,12 +6,12 @@ from os import path
 mongo = PyMongo()
 db = None
 
-def create_app():
+def create_app(secret_key, db_uri):
     global db
 
     app = Flask(__name__)
-    app.config["SECRET_KEY"] = "aarush0603"
-    app.config["MONGO_URI"] = "mongodb+srv://aarush:aarush0603@maincluster.w5jxd9e.mongodb.net/maindb?retryWrites=true&w=majority&appName=MainCluster"
+    app.config["SECRET_KEY"] = secret_key
+    app.config["MONGO_URI"] = db_uri
 
     mongo.init_app(app)
     db = mongo.db
