@@ -1,6 +1,9 @@
+import os
+
 from website import create_app
 from dotenv import load_dotenv
 
+load_dotenv()
 secret_key = os.getenv("SECRET_KEY")
 db_uri = os.getenv("DATABASE_URI")
 
