@@ -5,14 +5,16 @@
 {% block content %}
 <h1 align="center">Notes</h1>
 <ul class="list-group list-group-flush" id="notes">
-    {% for note in user.notes %}
+    {% if notes != [] %}
+    {% for note in notes %}
     <li class="list-group-item">{{ note.data }}
         <button type="button" 
                 class="btn-close" 
                 aria-label="Close"
-                onClick="deleteNote({{ note.id | tojson }})"></button>
+                onClick="deleteNote('{{ note._id }}')"></button>
     </li>
     {% endfor %}
+    {% endif %}
 </ul>
 
 <form method="POST">
@@ -24,10 +26,10 @@
 </form>
 
 <script>
-function deleteNote(noteId) {
+function deleteNote(note_id) {
     fetch("/delete-note", {
         method: "POST",
-        body: JSON.stringify({ noteId: noteId }),
+        body: JSON.stringify({ note_id: note_id }),
         headers: {
             "Content-Type": "application/json"
         }

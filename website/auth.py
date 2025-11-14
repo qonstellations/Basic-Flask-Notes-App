@@ -12,8 +12,10 @@ def login():
         email = request.form.get("email")
         password = request.form.get("password")
 
-        user = User.query.filter_by(email=email).first()
-        if user:
+        user = db.users.find_one(filter={"email" : email})
+
+        if user is not None:
+            user = User.conv_to_obj(user)
             if check_password_hash(user.password, password):
                 login_user(user, remember=True)
                 flash("Logged in Successfully!", category="success")
@@ -39,9 +41,9 @@ def sign_up():
         password1 = request.form.get("password1")
         password2 = request.form.get("password2")
 
-        user = User.query.filter_by(email=email).first()
+        user = db.users.find_one(filter={"email" : email})
 
-        if user:
+        if user is not None:
             flash("Email already exists. Please login!", category="error")
         elif not email or not first_name or not password1 or not password2:
             flash("All fields are compulsory to fill!", category="error")
@@ -50,13 +52,18 @@ def sign_up():
         elif password1 != password2:
             flash("Passwords do not match", category="error")
         else:
-            new_user = User(email=email, 
+            new_user = User(_id=None,
+                            email=email, 
                             first_name=first_name, 
                             password=generate_password_hash(password1))
-            db.session.add(new_user)
-            db.session.commit()
+
+            new_user_id = db.users.insert_one(new_user.conv_to_dict()).inserted_id
+            new_user._id = new_user_id
+
+            print(new_user._id)
             flash("Account created!", category="success")
-            login_user(user, remember=True)
+
+            login_user(new_user, remember=True)
             return redirect(url_for("views.home"))
 
     return render_template("sign_up.html", user=current_user)
